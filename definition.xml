@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ExtensionObject Label="d3QVCOT" Description"d3 Circles Over Time" PageHeight="50000">
+	<Dimension Label="Year Dimension" Initial="" TargetName="Dimension Name"/>
+	<Dimension Label="List Dimension" Initial="" TargetName="Dimension Name"/>
+	<Measurement Label="Measure" Initial=""/>
+	<Initiate Name="Chart.Title" value="d3 Circles"/>
+	<Initiate Name="Caption.Text" value="d3 Circles"/>
+</ExtensionObject>
