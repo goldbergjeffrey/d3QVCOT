@@ -9,3 +9,12 @@ body
 g.journal.active{cursor:pointer;}
 text.label{font-size:12px;font-weight:bold;cursor:pointer;}
 text.value{font-size:12px;font-weight:bold;}
+
+.scrolly {
+	height: 100%;
+	overflow:hidden;
+	position: relative; /* please don't change 'position' */
+    right: 3px; /* there must be 'right' for ps-scrollbar-y-rail */
+	background-color: #00000;
+	
+}

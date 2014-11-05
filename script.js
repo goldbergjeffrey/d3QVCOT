@@ -29,9 +29,11 @@ function extension_loadHelpers()
 {
 	var helperFiles = new Array();
 	helperFiles.push(template_path + "d3.min.js");
+	helperFiles.push(template_path + "perfect-scrollbar.js");
 	//Add more helper files here if necessary
 	Qv.LoadExtensionScripts(helperFiles, extension_register);
 	Qva.LoadCSS(template_path + "style.css");
+	Qva.LoadCSS(template_path + "perfect-scrollbar.css");
 }
 
 function extension_register()
@@ -54,17 +56,42 @@ function renderChart()
 	//var width = 300, height = 600;
 	_this.Data.SetPagesizeY(5000);
 	
+	
 	//Build the html element on the page
 	if(_this.Element.children.length==0)
 	{
 		var ui = document.createElement("div");
 		ui.setAttribute("id", divName);
-		ui.setAttribute("class","d3CirclesOverTime");
+		ui.setAttribute("class","d3CirclesOverTime scrolly"); //scrolly
 		_this.Element.appendChild(ui);
+
+ //Scrollbars		
+		var status = document.createElement("div");
+		status.setAttribute("id", 'status');
+		_this.Element.appendChild(status);
+		
+		var $container = $('#' + divName);
+		var $status = $('#status');
+        $container.perfectScrollbar();
+        $container.scroll(function(e) {
+          if($container.scrollTop() === 0) {
+            $status.text('it reaches the top!');
+          }
+          else if ($container.scrollTop() === $container.prop('scrollHeight') - $container.height()) {
+            $status.text('it reaches the end!');
+          } else {
+            $status.text('');
+          }
+        });
+		
+		
+		
 	}
 	else
 	{
 		$("#" + divName).empty();
+		        $('#' + divName).perfectScrollbar('update');
+
 	}	
 	
 	//Get the data into a format that D3 can read easily.
@@ -76,7 +103,8 @@ function renderChart()
 
 	var catColors = d3.scale.category20c();
 	
-	//When you see d3 code that has multiple lines starting with a period, think of the With...End With construct of Visual Basic.
+	//When you see d3 code that has multiple lines starting with a period, 
+	//think of the With...End With construct of Visual Basic.
 	var xScale = d3.scale.linear()
 		.range([0, width]);
 	
@@ -90,14 +118,13 @@ function renderChart()
 	var svg = d3.select("#" + divName)
 		.append("svg")
 		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
+		.attr("height", 5000) //height + margin.top + margin.bottom)
 		.style("margin-left", margin.left + "px")
 		.append("g")
 		.attr("transform","translate(" + margin.left + "," + margin.top + ")");
 		
 	//seeing the visualization come to life
 	d3Dots(jsonData);
-	
 	
 	
 	function d3Dots(data)
@@ -132,20 +159,21 @@ function renderChart()
 			
 			circles
 				.attr("cx", function(d,i) {return xScale(d[0]); })
-				.attr("cy", j*20+20)
+				.attr("cy", j*35+20)
 				.attr("r", function(d) {return rScale(d[1]); })
 				.style("fill", function(d) {return catColors(j); });
 				
 			text
-				.attr("y", j*20+25)
+				.attr("y", j*35+25)
 				.attr("x", function(d,i) {return xScale(d[0])-5; })
+				.attr("transform", function(d){return 'rotate(-30)';}) //Fix this to happen with each value
 				.attr("class","value")
 				.text(function(d) {return d[1]; })
 				.style("fill", function(d) {return catColors(j); })
 				.style("display","none");
 				
 			g.append("text")
-				.attr("y",j*20+25)
+				.attr("y",j*35+25)
 				.attr("x", width+20)
 				.attr("class","label")
 				.text(truncate(data[j]['DimensionName'],20,"..."))
